@@ -1,0 +1,10 @@
+Optimization terminated:
+ the current x satisfies the termination criteria using OPTIONS.TolX of 1.000000e-02 
+ and F(X) satisfies the convergence criteria using OPTIONS.TolFun of 1.000000e+00 
+
+Estimated params with population data
+Rho, Betahat bl
+    2.6215    0.9367
+
+Time Spent (mins)
+   42.4757

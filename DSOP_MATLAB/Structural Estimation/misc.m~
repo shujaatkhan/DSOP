@@ -1,0 +1,33 @@
+% setup_params.m
+Constrained
+PeriodsToSolve
+NumOfShockPoints
+VarPerm = zeros(1,PeriodsToSolve-(90-65));
+VarTran = zeros(1,PeriodsToSolve-(90-65));
+SIGMAPerm          = [sqrt(VarPerm) 0.001*ones(1,90-65)]; 
+SIGMATran          = [sqrt(VarTran) 0.001*ones(1,90-65)];  
+pUnemp
+pRetire
+RFree
+AlphaMin
+AlphaMax
+AlphaHug % Value of Alpha at which we connect to perf foresight function
+n = 10;                           % Number of points in AlphaVec
+
+InitialWYRatio     = [0.17, .5, .83]; %[0.3 0.98 2.17];             % Initial wy ratio (from the program on the paper (p.13))
+InitialWYRatioProb = [.33333, .33333, .33334];    % Prob associated with initial wy ratio 
+VarInitialLogInc   = .3329;                        % Variance of initial log income
+
+ProbOfAlive = [ones(1,PeriodsToSolve-length(ProbOfAlive)),ProbOfAlive];
+% Position of match 
+pi              = 0.50; % pith quantile is matched 
+
+% setup_functions.m
+uP = inline('c.^(-rho)','c','rho');   % CRRA marginal utility function
+nP = inline('c.^(-1/rho)','c','rho'); % Inverse of the CRRA marginal 
+
+
+
+
+
+

@@ -1,0 +1,40 @@
+Values set up in the initial steps:
+
+
+One first-pass step is to simply use the Matlab code to *create* the JSON file
+which we want to use for the Python code. 
+
+So track two things as I work through all of the setup code:
+
+    1.  the place and name of everything which is defined *in* the matlab code, which is also in JSOn file
+    
+    2.  any things defined in the Matlab code which is *not* used in the JSON / Python file.
+
+
+
+Slowly working through all setup files:
+--------------------------------------------------------------------------------
+setup_everything.m:
+
+global PeriodsToSolve... 
+    RFree n InitialWYRatio InitialWYRatioProb...
+    VarInitialLogInc ProbOfAlive LevelAdjustingParameter...
+    ThetaMat ThetaMatProb PermMat PermVecProb...
+    AlphaVec nP uP GList Betacorr NumOfPeriodsToSimulate NumOfPeople...
+    ThetaList PermList stIndicator pi WealthCollege weight Constrained
+
+
+setup_params
+setup_functions
+setup_grid_eee
+setup_shocks
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+

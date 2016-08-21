@@ -1,0 +1,188 @@
+Values set up in the initial steps:
+
+
+Update: 13 Feb 2015
+
+Much happened in between -- Zurich, CEF-prep, "breakthroughs," etc. Now back on.
+
+Immediate next step is trying to get Matlab Python working today. MISSION.
+
+Where at with Matlab:
+
+*
+
+
+
+
+Update: 13 Jan 2015
+
+The Python code, running under the new JSON file and the new code structure, appears to replicate the Matlab output well. This is good news. Now the next step is to tie the MATLAB code to the same JSON file.
+
+I will need to step through the Matlab code, while using the "JSON/Matlab converter notes" to see where all the relevant items are sitting in Matlab context.
+
+*Then* change the relevant portions of the matlab code to read from JSON inputs instead of hard-coded inputs.
+
+Then "simply" re-run the Matlab code and compare results to *old* matlab results, and *new* Python results.
+
+Ideally we can get this posted very soon. Awesome.
+
+Files used, in order of use:
+
+dofirst.m  -- if we want to run any elements independently
+
+* EstimateRhoAndBetahat, params:
+    * Now ID the elements that show up in the JSON file:
+    * "Nagents_bootstrap":"NumOfPeopleBootstrap; EstimateRhoAndBetahat.m; 10000 (NONE; doesn't exist in Python); FIX?
+    * NumOfPeriodsToSimulate = 90-55+1;   % Length of life in simulation (simulate until age 60)
+    * NumOfPeople            = 10000;      % Number of people to simulate
+    * NumOfPeopleBootstrap   = 10000;      % Number of people to simulate in bootstopping process
+    * NumOfBootstrap         = 30;        % Number of times to iterate bootstapping process
+    * weight        = ones(1,7);               % Weight = 1 for each of the 7 age groups
+    * x0            = [4.0,0.99];
+    * 'tolx',0.01,'tolfun',1      % Settings for optimization. Set in json?
+
+* Subfiles called in EstimateRhoAndBetahat:
+    * setup_everything
+
+* Subfiles called in setup_everything:
+    * setup_params
+    * setup_functions
+    * setup_grid_eee
+    * setup_shocks
+
+* setup_params, params:
+    * Constrained            = 0;
+    * PeriodsToSolve     = 90-25; %x                     % Number of periods to iterate
+    * NumOfShockPoints   = 8;     %x                     % Number of points in the discrete approximation to lognormal dist
+
+    * NOTE: NEED TO ENCODE THIS VALUE:  90-65
+
+    * VarPerm = zeros(1,PeriodsToSolve-(90-65)); %na     % UNCLEAR if this needed @ end
+    * VarTran = zeros(1,PeriodsToSolve-(90-65)); %na
+
+    * SIGMAPerm          = [sqrt(VarPerm) 0.001*ones(1,90-65)];   %x
+    * SIGMATran          = [sqrt(VarTran) 0.001*ones(1,90-65)];   %x
+
+    * pUnemp             = 0;%0.5/100;  %x                      % Probability of unemployment (when unemployed inc level is zero)
+    * pRetire            = pUnemp/10;   %x
+    * RFree               = 1.03;       %x               % Gross interest rate
+    * AlphaMin           = 0.00001;     %x                % Minimum point in AlphaVec (glid of possible saving)
+    * AlphaMax           = 4;           %x                % Maximum point in AlphaVec
+    * AlphaHuge          = 10;          %x               % Value of Alpha at which we connect to perf foresight function
+    * % see: "NEW_a_huge":  "AlphaHuge;setup_params.m; 5 (NONE); FIX",
+    * n                  = 50;                           % Number of points in AlphaVec
+    * InitialWYRatio     = [0.17, .5, .83]; %[0.3 0.98 2.17];             % Initial wy ratio (from the program on the paper (p.13))
+    * InitialWYRatioProb = [.33333, .33333, .33334];    % Prob associated with initial wy ratio
+    * VarInitialLogInc   = .3329;                       % Variance of initial log income
+    * % see:     * "NEW_initial_wealth_income_ratio_variance": "VarInitialLogInc; setup_params.m; .3329  (NONE); FIX",
+    * ProbOfAlive = [...];
+    * ProbOfAlive = [ones(1,PeriodsToSolve-length(ProbOfAlive)),ProbOfAlive];
+    * pi              = 0.50; % pith quantile is matched
+    * SETUP_PARAMTERS DONE
+
+* setup_functions, params:
+    * these are only the inline uP, nP functions (hah, just got the "visual" of the inverse )
+
+* setup_grid_eee
+    * no params, only AlphaVec vector
+
+* setup_shocks
+    * *don't believe* there are any params here; only shock vectors
+
+* setup_GList
+    * GList
+    * WILL REPLACE THIS WITH THE JSON READ-IN
+
+* setup_Betacorr
+    * Betacorr
+    * WILL REPLACE THIS WITH THE JSON READ-IN
+
+* Data_SCF_wealth
+    * loads the SCF data. Need to make sure this is using, explicitly, the same data input file.
+    * CREATES THESE VARIABLES:
+        * WealthPopulationCollege
+        * TotalNumOfObs
+        * what else needed?
+    * TO DO with this file: Move this and the data to the "parameters" file. Run this *once* to create the appropriate data output file, then use that data file for BOTH.
+    * VERY IMPORTANT NOTES:
+        * (a)  Need to determine where the *original* data.m file comes from, and (ideally) re-run that construction in open-source code
+        * (b)  Need to replace this with reading from the central data source. THEN OF COURSE compare Python and Matlab!
+        * (c) NOTE 3: the differences may be entirely due to the re-weighting that happens during this process, one level up. Need to check this out.
+    * weights:
+
+
+* ConstructcInterpFunc_EG.m
+    * n95:        GothicAVect = sort([0.005 GothicAVec])+ aLowerBoundt;
+    * NOTE: the 0.005 is the "a_extra" that I added to the JSON file! Important to replace!
+
+* ConstructcInterpFunc.m
+    * n77:        GothicAVect = sort([0.005 GothicAVec])+ aLowerBoundt;
+    * NOTE: the 0.005 is the "a_extra" that I added to the JSON file! Important to replace!
+
+
+* MAJOR NOTE: For each item we replace, I'd like to demonstrate that the results are the same before and after the replacement...
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+WHERE AT: Now walk through file and slowly move as much as can to a single space. This is pretty important.
+
+
+
+OLD WHERE AT: Next step is to make the big "checklist" of values in the JSON "dictionary"-style file which outlines which values come from which Matlab file. Want to manually check off that all of the values we care about have been observed above. Fill out the list above with any "missing" bits.
+
+THEN next step is to start building the single JSON import file, and replacing the components of the code which create each of those bits. Will need to use the list above to confirm that have found and replaced each of the correct references.
+
+Essentially, we will want to confirm that all of the 'hard-coded' params noted above are pulled in or created appropriately in a Matlab parallel-to-Python  version of the "setup_estimation_parameters.py" from the Python code.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================
+Now the next step is to create a big "checklist" for the parameters in the JSON compare file.
+
+
+
+
+plotWealthPermIncRatio;
+plotFigA1_ProbOfALive;
+plotFigA1_ProbOfALive;
+plotFigA2_Beta;
+plotFigA3_G;
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+One first-pass step is to simply use the Matlab code to *create* the JSON file
+which we want to use for the Python code.
+
+So track two things as I work through all of the setup code:
+
+    1.  the place and name of everything which is defined *in* the matlab code, which is also in JSOn file
+
+    2.  any things defined in the Matlab code which is *not* used in the JSON / Python file.
+
+
+
+Slowly working through all setup files:
+--------------------------------------------------------------------------------
+setup_everything.m:
+
+global PeriodsToSolve...
+    RFree n InitialWYRatio InitialWYRatioProb...
+    VarInitialLogInc ProbOfAlive LevelAdjustingParameter...
+    ThetaMat ThetaMatProb PermMat PermVecProb...
+    AlphaVec nP uP GList Betacorr NumOfPeriodsToSimulate NumOfPeople...
+    ThetaList PermList stIndicator pi WealthCollege weight Constrained
+
+
+setup_params
+setup_functions
+setup_grid_eee
+setup_shocks
+--------------------------------------------------------------------------------

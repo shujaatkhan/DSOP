@@ -1,0 +1,52 @@
+function GothicVaa = GothicVaa(a,Rho,BetaLife,RLife,GammaLife,mLowerBoundLife,DeltaGothicHLife,KappaMin,ThetaVals,ThetaVecProb,PermVals,PermVecProb,PeriodsUntilT,chiIntData,Constrained)
+%==========================================================================%
+% Solution Methods for Micro Dymanic Stochastic Optimization               %
+%                                                                          %
+% 2nd Derivative of Gothic V                                               %
+%                                                                          %
+%   Inputs:                                                                %
+%       a - beginning of period assets                                     %
+%       Rho - Coefficient of Relative Risk Aversion                        %
+%       Beta -  pure time discount factor                                  %
+%       RFree - Interst Factor (1+r)                                       %
+%       NumOfThetaShockPoints - Number of shocks in discrete approx.       %
+%       ThetaVals - Value of the shocks                                    %
+%   Outputs:                                                               %
+%       GothicVaa - 2nd Derivative of Gothic V                             %
+%                                                                          %
+%__________________________________________________________________________%
+
+GothicVaa=zeros(size(a)); 
+
+fprintf("TEST 22 -------------------------------------------- 223-d1\n")
+drawnow
+
+for i=1:length(ThetaVals)
+fprintf("TEST 22 -------------------------------------------- 223-d2\n")
+drawnow
+    for j = 1:length(PermVals)
+fprintf("TEST 22 -------------------------------------------- 223-d3\n")
+drawnow
+    mtp1 = (RLife(PeriodsUntilT+1)/(GammaLife(PeriodsUntilT+1)*PermVals(j)).*a + ThetaVals(i));
+fprintf("TEST 22 -------------------------------------------- 223-d4\n")
+drawnow
+    GothicVaa = GothicVaa+((GammaLife(PeriodsUntilT+1)*PermVals(j))^(-Rho-1)).*...
+        uPP(ScriptC(mtp1,mLowerBoundLife,DeltaGothicHLife,KappaMin,PeriodsUntilT,chiIntData,Constrained),Rho).*...
+        ScriptKappa(mtp1,mLowerBoundLife,DeltaGothicHLife,KappaMin,PeriodsUntilT,chiIntData)...
+        *PermVecProb(j)*ThetaVecProb(i);
+fprintf("TEST 22 -------------------------------------------- 223-d5\n")
+drawnow
+    end
+fprintf("TEST 22 -------------------------------------------- 223-d6\n")
+drawnow
+end
+fprintf("TEST 22 -------------------------------------------- 223-d7\n")
+drawnow
+GothicVaa = GothicVaa.*BetaLife(PeriodsUntilT+1)*RLife(PeriodsUntilT+1)^2;
+fprintf("TEST 22 -------------------------------------------- 223-d8\n")
+drawnow
+end
+fprintf("TEST 22 -------------------------------------------- 223-d9\n")
+drawnow
+
+% need to define function kappa

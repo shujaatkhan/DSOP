@@ -1,0 +1,177 @@
+   -0.9670    0.0000    0.7653
+   -0.9533    0.0088    0.5560
+   -0.7826    0.1005    0.5357
+   -0.5519    0.2240    0.5355
+   -0.2515    0.3849    0.5355
+    0.1497    0.5997    0.5355
+    0.7020    0.8955    0.5355
+    1.4904    1.3177    0.5355
+    2.6667    1.9476    0.5355
+    4.5203    2.9403    0.5355
+    7.6481    4.6152    0.5355
+    9.8010    5.7681    0.5355
+    
+   -0.9670    0.0000    0.7653
+   -0.9533    0.0088    0.5560
+   -0.7826    0.1005    0.5357
+   -0.5519    0.2240    0.5355
+   -0.2515    0.3849    0.5355
+    0.1497    0.5997    0.5355
+    0.7020    0.8955    0.5355
+    1.4904    1.3177    0.5355
+    2.6667    1.9476    0.5355
+    4.5203    2.9403    0.5355
+    7.6481    4.6152    0.5355
+    9.8010    5.7681    0.5355
+    
+
+
+
+# Checking the last period:
+
+% Method of Moderation:
+IntData(:,:,66) =
+
+   -0.8901    0.0000    0.6499
+   -0.8758    0.0093    0.6500
+   -0.6561    0.1500    0.6029
+   -0.4551    0.2439    0.2707
+   -0.2910    0.2684    0.0852
+   -0.0898    0.2833    0.0694
+    0.1850    0.3015    0.0638
+    0.5750    0.3253    0.0586
+    1.1537    0.3577    0.0536
+    2.0610    0.4040    0.0488
+    3.5843    0.4744    0.0441
+    4.6292    0.5193    0.0420
+
+% EG version:
+IntData(:,:,66) =
+
+   -0.8901    0.0000    0.0000
+   -0.8758    0.0093    0.0000
+   -0.6578    0.1482    0.0000
+   -0.4389    0.2601    0.0006
+   -0.2559    0.3035    0.0013
+   -0.0464    0.3266    0.0018
+    0.2359    0.3524    0.0024
+    0.6362    0.3865    0.0034
+    1.2300    0.4340    0.0052
+    2.1614    0.5044    0.0086
+    3.7274    0.6175    0.0160
+    4.8033    0.6934    0.0223
+
+
+
+
+
+% We'll want to compare the consumption functions against one another on a fixed 
+% grid. Let's use:
+
+AlphaVec
+AlphaVec =
+
+    0.0000    0.0840    0.1911    0.3307    0.5170    0.7736    1.1398    1.6861    2.5472    4.0000    5.0000
+
+% Assume we've saved the interpolation values as follows:
+
+MoModIntData = IntData;     % Saved when we run the method of moderation code
+EGIntData = IntData;        % Saved when we run Endogenous Gridpoints only code
+
+% Assume we have the PeriodsToSolve:
+
+PeriodsToSolve
+
+
+% Set up a *smaller* grid to comapre on:
+AlphaMinNEW = 0.0001
+AlphaMaxNEW = 5
+nNEW = 1000
+AlphaVecNEW = exp(exp(exp(linspace(log(log(log(AlphaMinNEW+1)+1)+1),log(log(log(AlphaMaxNEW+1)+1)+1),nNEW))-1)-1)-1;
+
+
+for Tminust = 1:PeriodsToSolve;
+
+    MoMod_baseM = MoModIntData(:,1,Tminust);
+    MoMod_baseC = MoModIntData(:,2,Tminust);
+
+    cMoMod = interp1(MoMod_baseM, MoMod_baseC, AlphaVecNEW,'linear','extrap');
+
+    EG_baseM = EGIntData(:,1,Tminust);
+    EG_baseC = EGIntData(:,2,Tminust);
+
+    cEG = interp1(EG_baseM, EG_baseC, AlphaVecNEW,'linear','extrap');
+
+    disp(cMoMod);
+    disp(cEG);
+
+    plot(AlphaVecNEW, cMoMod-cEG);
+    
+
+    plot(AlphaVecNEW, cMoMod);
+    hold
+    plot(AlphaVecNEW, cEG);
+
+
+    disp('Max difference:');
+    disp(max(cMoMod-cEG));
+    disp('Iteration:');
+    disp(Tminust);
+    disp('');
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+% So lets actally step through the rest of this carefully, one go at a time!
+
+% First set up the translation between the main code variables and the function 
+% variables (so we can execute portions of the function code in the main code
+% namespace. 
+
+a=GothicAVect
+Rho=Rho
+BetaLife=BetaLife
+RLife=RLife
+GammaLife=GammaLife
+mLowerBoundLife=mLowerBoundLife
+ThetaVals=ThetaVec
+ThetaVecProb=ThetaVecProb
+PermVals=PermVec
+PermVecProb=PermVecProb
+PeriodsUntilT=l-1
+futureM=futureMvect
+futureC=futureCvect
+Constrained=Constrained
+
+% Guts of the function:
+
+GothicVa=zeros(size(a)); 
+
+i=1
+j=1
+for i=1:length(ThetaVals)
+    for j = 1:length(PermVals)
+    mtp1 = (RLife(PeriodsUntilT+1)/(GammaLife(PeriodsUntilT+1)*PermVals(j)).*a + ThetaVals(i));
+    GothicVa = GothicVa+((GammaLife(PeriodsUntilT+1)*PermVals(j))^(-Rho))*...
+                uP(ScriptC_EG(mtp1, mLowerBoundLife, futureM, futureC, Constrained),Rho)...
+        *PermVecProb(j)*ThetaVecProb(i)
+    end
+end
+
+GothicVa = GothicVa.*BetaLife(PeriodsUntilT+1)*RLife(PeriodsUntilT+1);
+end
+
+    
+    
+    

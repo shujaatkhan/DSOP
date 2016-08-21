@@ -1,0 +1,197 @@
+Planning:
+
+A temporary planning file for aligning Matlab and Python code.
+
+Steps to take:
+
+    1.  Identify parameters used for current Matlab Structural Estimation model.
+
+    2.  Output these parameters from the Matlab file, into csv or similar file.
+        Important to get the exact values from Matlab -- don't allow for human
+        error entering first-pass of replication.
+
+    3.  Put all correct values into "Python" JSON file.
+
+    4.  Run the Matlab and Python versions of the objective functions for a small select set of values:
+        the optimum,   a few values around the optimum, and a few values far away from the optimum.
+
+    5.  As needed, search for differences between the Matlab code and the Python code.
+
+    6.  Work on a Matlab "read_parameters_from_json.m" file, as in the Python version,
+        to read parameter values from the same JSON file as the Python version does.
+
+    7.  Repeat step (4) above: show that the JSON-parameterized Matlab and Python
+        create the same output values for select paramter combinations.
+
+
+
+--------------------------------------------------------------------------------
+Details:
+
+ID paramters by working through this file:
+
+    EstimateRhoAndBetahat.m
+
+> which indicates:
+
+    setup_everything.m
+
+>> which indicates:
+
+    setup_params
+    setup_functions
+    setup_grid_eee
+    setup_shocks
+
+Once we are back in EstimateRhoAndBetahat.m, we encounter:
+
+    setup_GList;                        % Load GList
+    setup_Betacorr;                     % Load corrected beta
+    NumOfPeriodsToSimulate = 90-55+1;   % Length of life in simulation (simulate until age 60)
+    NumOfPeople            = 10000;      % Number of people to simulate
+    NumOfPeopleBootstrap   = 10000;      % Number of people to simulate in bootstopping process
+    NumOfBootstrap         = 30;        % Number of times to iterate bootstapping process
+    setup_shocksLists                   % Set up shock lists
+    % Estimation
+    Data_SCF_wealth                          % Load data
+
+
+
+
+
+
+********************************************************************************
+Currently at:   setup_Betacorr.m
+
+
+
+Notes on setup_Betacorr.m:
+
+
+
+
+Notes on setup_GList.m:
+
+    -   Three values in here:
+            - Incomec
+            - IncomeLevelc
+            - GList
+
+        Need to confirm that only GList is used outside this context...
+        CONFIRMED. grep shows that only the "GList" value shows up later in the
+        code.
+
+
+    -   May want to include this small bit of Matlab code in the "Parameters"
+        directory, such that anyone can reproduce this GList if they want.
+
+    -   Need to more generally ask Chris about how he'd like to handle the
+        "parameterization"/"calibration" portion of choosing all these
+        structural values.
+
+
+
+Notes on setup_shocks.m:
+
+    -   These are the structures created by this file (all others are deleted):
+
+            -   ThetaMat
+            -   ThetaVecRetireProb
+            -   ThetaMatProb
+            -   PermMat
+            -   PermVecProb
+
+        This is a good place to look if we find problems with replication.
+
+
+    -   IMPORTANT NOTE:
+
+            -   The Matlab code has both *retirement* and *non-retirement*
+                individuals facing uncertainty from a lognormal distribution --
+                which **may** change in retirement years vs outside of retire
+                years, due to the values of SIGMATran(i) changing.
+                In the Matlab code, the values post-retirement appear to drop very low
+                BUT, this
+                appears to be reasonably different from Python setup, which assumes
+                that the *only* uncertainty past a certain age is due to
+                the single possible zero-shock to retirement income; otherwise
+                all income "frozen" at the last shock values before retirement.
+
+                **This is important key point here.**
+
+                Will need to add to Python code, a "switch" which allows us to
+                determine whether retirement income has "full uncertainty" or
+                "zero-shock-only" uncertainty.
+                **NEED TO ADD.** This will definitely change whether code
+                matches.
+
+
+    *   MORE important notes, related to variance over the life cycle:
+
+            -   In   setup_shocks.m, it appears as though the SIGMATran and
+                SIGMAPerm shocks appear to be  **in reverse order**.
+                That is, the 25 values of "very low" variance shocks are at
+                the end. 25 years is the length of retirement (with 40 being
+                length of working years). In the past we've talked about shocks
+                to *retirement* income being very low -- here, the shocks to the
+                first 25 years of working life are very low, and grow quite a
+                lot in the 26th-65th years.
+                Recall that the model is written with a "Tminust" timing -- that
+                is, the first index indicates the next-to-last period, etc. (The
+                "0" period indicates the final period. This actually lets us
+                somewhat match the Python code against the Matlab code with
+                respect to timing and indices -- in Matlab code, simple don't
+                include the final period values in all vectors, and i=1 -> T-1,
+                while in Python, i=0 -> T).
+
+                Regardless, we will confirm this when we run the two codes
+                against one another.
+
+                Perhaps it is the case that some indexing later in the code
+                mitigates this concern.
+
+
+                NOTE that the line:
+
+                    ThetaMatProb = [repmat(ThetaVecProb,PeriodsToSolve-(90-65),1);repmat(ThetaVecRetireProb,90-65,1)];
+
+                is at least consistent with the SIGMATran and SIGMAPerm values
+                being ordered with the youth first and retirement second.
+
+                Will need to see how this is used in the code.
+
+
+    *   We will need to be very careful about the timing of the approximated
+        shock distributions and how they are used in the code.
+
+        The parameterization is going to be extremely important to get correct
+        here. If the Matlab code "reverses" the timing references to all the
+        income shock values, we can't "simply" use the same input vectors for
+        each. We'll need to reverse the input SIGMATran and SIGMAPerm vectors
+        in either Matlab or Python's JSON "read-in" functions (if both reading
+        from the same JSON file.)
+
+    *   Generally: we will need to be careful that the "vector values" fed into
+        the JSON file contain -- or don't contain -- a final T period value, \
+        "appropriately." The Python code, I think will include a final-T value
+        for i=0, while the Matlab (and perhaps Mathematica) code, and any other
+        with 1-indexed structures, will not include functions or values for the
+        final T period. This will let us "align" different-indexed code types.
+
+
+Notes on setup_params.m:
+
+    -   Need to work out how the "WeightedSumDist.m" file uses "pi" from end of
+        "setup_params.m" to create the weighted sum for the "model_error"
+        function. Python code does it a little differently, and likely more
+        effciently.
+
+
+Notes on  setup_functions.m:
+    -   No params set (just inline funcitons)
+
+Notes on  setup_grid_eee.m:
+
+    -   Need to confirm that the code here does the exact same thing as the more
+        general Python code  (which was stolen straight from the more-general
+        Matlab code from the MicroDSOP notes code).
