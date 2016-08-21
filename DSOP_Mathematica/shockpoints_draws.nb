@@ -1,0 +1,532 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.4' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     20370,        524]
+NotebookOptionsPosition[     20112,        510]
+NotebookOutlinePosition[     20469,        526]
+CellTagsIndexPosition[     20426,        523]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "Discrete", " ", "distribution", " ", "of", " ", "shocks", " ", "at", " ",
+      "each", " ", "period", " ", "of", " ", "life"}], " ", "->", " ", 
+    RowBox[{
+    "used", " ", "to", " ", "solve", " ", "for", " ", "the", " ", "policy", 
+     " ", "functions"}]}], " ", "*)"}], "\n", "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+     "This", " ", "loop", " ", "will", " ", "run", " ", "from", " ", "t"}], 
+     "=", 
+     RowBox[{
+      RowBox[{"1", " ", "to", " ", "t"}], "=", "40"}]}], ",", " ", 
+    RowBox[{
+     RowBox[{"i", ".", "e", ".", " ", "a"}], "=", 
+     RowBox[{
+      RowBox[{"26", " ", "to", " ", "a"}], "=", "65."}]}]}], " ", "*)"}], 
+  "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[Theta]AgeYoung", "[", "t_", "]"}], " ", ":=", " ", 
+     RowBox[{"Block", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "\[Sigma]\[Theta]Age", ",", "\[Theta]Age", ",", "\[Theta]ValsWork", 
+         ",", "\[Theta]ProbsWork"}], "}"}], ",", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\[Sigma]\[Theta]Age", "=", " ", 
+         RowBox[{"\[Sigma]\[Theta]", "[", 
+          RowBox[{"[", "t", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\[Theta]ValsWork", ",", "\[Theta]ProbsWork"}], "}"}], " ", 
+         "=", " ", 
+         RowBox[{"DiscreteMeanOneLogNormal", "[", 
+          RowBox[{"\[Sigma]\[Theta]Age", ",", "NumOf\[Theta]ShockPoints"}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"If", " ", "\[Sigma]\[Theta]Age"}], "=", "0"}], ",", " ", 
+          RowBox[{"we", " ", "need", " ", "to", " ", "fill", " ", "in", " ", 
+           RowBox[{"(", 
+            RowBox[{"NumOf\[Theta]ShockPoints", "-", "1"}], ")"}], " ", 
+           "zeros", " ", "to", " ", "keep", " ", "the", " ", "matrix", " ", 
+           "size", " ", "fixed"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"If", " ", "[", 
+         RowBox[{
+          RowBox[{"\[Sigma]\[Theta]Age", "\[Equal]", "0"}], ",", 
+          RowBox[{
+           RowBox[{"\[Theta]ValsWork", "=", 
+            RowBox[{"Flatten", "[", 
+             RowBox[{"Append", "[", 
+              RowBox[{"\[Theta]ValsWork", ",", 
+               RowBox[{"ConstantArray", "[", 
+                RowBox[{"0", ",", 
+                 RowBox[{"NumOf\[Theta]ShockPoints", "-", "1"}]}], "]"}]}], 
+              "]"}], "]"}]}], ";", 
+           RowBox[{"\[Theta]ProbsWork", "=", 
+            RowBox[{"Flatten", "[", 
+             RowBox[{"Append", "[", 
+              RowBox[{"\[Theta]ProbsWork", ",", 
+               RowBox[{"ConstantArray", "[", 
+                RowBox[{"0", ",", 
+                 RowBox[{"NumOf\[Theta]ShockPoints", "-", "1"}]}], "]"}]}], 
+              "]"}], "]"}]}], ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"\[Mho]", ">", "0"}], ",", 
+          RowBox[{
+           RowBox[{"\[Theta]ValsWork", "=", 
+            RowBox[{"Prepend", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"1", "/", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "-", "\[Mho]"}], ")"}]}], ")"}], " ", 
+               "\[Theta]ValsWork"}], ",", "0"}], "]"}]}], ";", 
+           RowBox[{"\[Theta]ProbsWork", "=", 
+            RowBox[{"Prepend", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"1", "-", "\[Mho]"}], ")"}], " ", 
+               "\[Theta]ProbsWork"}], ",", "\[Mho]"}], "]"}]}], ";", " ", 
+           RowBox[{"\[Theta]Age", " ", "=", " ", 
+            RowBox[{"{", 
+             RowBox[{"\[Theta]ValsWork", ",", "\[Theta]ProbsWork"}], 
+             "}"}]}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\[Theta]Age", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"\[Theta]ValsWork", ",", "\[Theta]ProbsWork"}], "}"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"Return", "[", "\[Theta]Age", "]"}], ";"}]}], "\n", "]"}]}], 
+    ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+      "This", " ", "loop", " ", "will", " ", "run", " ", "from", " ", "t"}], 
+      "=", 
+      RowBox[{
+       RowBox[{"1", " ", "to", " ", "t"}], "=", "25"}]}], ",", " ", 
+     RowBox[{
+      RowBox[{"i", ".", "e", ".", " ", "a"}], "=", 
+      RowBox[{
+       RowBox[{"66", " ", "to", " ", "a"}], "=", "90."}]}]}], " ", "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[Theta]AgeOld", "[", "t_", "]"}], " ", ":=", " ", 
+     RowBox[{"Block", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "\[Sigma]\[Theta]Retire", ",", "\[Theta]Age", ",", 
+         "\[Theta]ValsRetire", ",", "\[Theta]ProbsRetire"}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\[Sigma]\[Theta]Retire", "=", 
+         RowBox[{"\[Sigma]\[Theta]", "[", 
+          RowBox[{"[", 
+           RowBox[{"65", "-", 
+            RowBox[{"(", 
+             RowBox[{"90", "-", "65"}], ")"}], "+", "t"}], "]"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"\[Theta]ValsRetire", ",", " ", "\[Theta]ProbsRetire"}], 
+          "}"}], "=", 
+         RowBox[{"DiscreteMeanOneLogNormal", "[", 
+          RowBox[{"\[Sigma]\[Theta]Retire", ",", "NumOf\[Theta]ShockPoints"}],
+           "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"\[Theta]ValsRetire", "=", 
+         RowBox[{"Flatten", "[", 
+          RowBox[{"Append", "[", 
+           RowBox[{"\[Theta]ValsRetire", ",", 
+            RowBox[{"ConstantArray", "[", 
+             RowBox[{"0", ",", 
+              RowBox[{"NumOf\[Theta]ShockPoints", "-", 
+               RowBox[{"Length", "[", "\[Theta]ValsRetire", "]"}], "+", 
+               RowBox[{"Boole", "[", 
+                RowBox[{"\[Mho]", ">", "0"}], "]"}], "-", 
+               RowBox[{"Boole", "[", 
+                RowBox[{"\[Mho]Retire", ">", "0"}], "]"}]}]}], "]"}]}], "]"}],
+           "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"\[Theta]ProbsRetire", "=", 
+         RowBox[{"Flatten", "[", 
+          RowBox[{"Append", "[", 
+           RowBox[{"\[Theta]ProbsRetire", ",", 
+            RowBox[{"ConstantArray", "[", 
+             RowBox[{"0", ",", 
+              RowBox[{"NumOf\[Theta]ShockPoints", "-", 
+               RowBox[{"Length", "[", "\[Theta]ProbsRetire", "]"}], "+", 
+               RowBox[{"Boole", "[", 
+                RowBox[{"\[Mho]", ">", "0"}], "]"}], "-", 
+               RowBox[{"Boole", "[", 
+                RowBox[{"\[Mho]Retire", ">", "0"}], "]"}]}]}], "]"}]}], "]"}],
+           "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+          RowBox[{"Assuming", " ", "that", " ", "\[Mho]Retire"}], ">", 
+          RowBox[{"0", " ", "only", " ", "if", " ", "\[Mho]"}], ">", "0"}], 
+         " ", "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"\[Mho]Retire", ">", "0"}], ",", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"\[Theta]ValsRetire", "=", 
+            RowBox[{"Prepend", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"1", "/", 
+                 RowBox[{"(", 
+                  RowBox[{"1", "-", "\[Mho]Retire"}], ")"}]}], ")"}], " ", 
+               "\[Theta]ValsRetire"}], ",", "0"}], "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"\[Theta]ProbsRetire", "=", 
+            RowBox[{"Prepend", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"1", "-", "\[Mho]Retire"}], ")"}], " ", 
+               "\[Theta]ProbsRetire"}], ",", "\[Mho]Retire"}], "]"}]}], ";", 
+           " ", "\[IndentingNewLine]", 
+           RowBox[{"\[Theta]Age", " ", "=", " ", 
+            RowBox[{"{", 
+             RowBox[{"\[Theta]ValsRetire", ",", "\[Theta]ProbsRetire"}], 
+             "}"}]}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"\[Theta]Age", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"\[Theta]ValsRetire", ",", "\[Theta]ProbsRetire"}], "}"}]}],
+         ";", "\[IndentingNewLine]", 
+        RowBox[{"Return", "[", "\[Theta]Age", "]"}], ";"}]}], 
+      "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"\[Theta]MatYoungToOld", "=", 
+     RowBox[{"Join", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"\[Theta]AgeYoung", "[", "t", "]"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", "1", ",", 
+           RowBox[{"PeriodsToSolve", "-", 
+            RowBox[{"(", 
+             RowBox[{"90", "-", "65"}], ")"}]}]}], "}"}]}], "]"}], "\n", ",", 
+       " ", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"\[Theta]AgeOld", "[", "t", "]"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", "1", ",", 
+           RowBox[{"90", "-", "65"}]}], "}"}]}], "]"}]}], "]"}]}], ";"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{"\[Theta]Mat", "=", 
+     RowBox[{"Reverse", "[", "\[Theta]MatYoungToOld", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", "\n", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+      RowBox[{"NOTE", ":", " ", 
+       RowBox[{"SAK", " ", 
+        RowBox[{
+         RowBox[{"08", "/", "14"}], "/", "16."}], " ", "The", " ", 
+        "following", " ", "lines", " ", "do", " ", "not", " ", "work", " ", 
+        "if", " ", "\[Mho]"}]}], "=", "0"}], "  ", "*)"}], "\n", 
+    RowBox[{"(*", " ", 
+     RowBox[{"MNW", ":", " ", 
+      RowBox[{
+      "Next", " ", "three", " ", "lines", " ", "are", " ", "necessary", " ", 
+       "to", " ", "keep", " ", "lists", " ", "of", " ", "even", " ", 
+       "length"}]}], "*)"}], "\n", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+     "This", " ", "makes", " ", "GPU", " ", "programming", " ", "much", " ", 
+      "easier"}], " ", "*)"}], "\n", 
+    RowBox[{
+     RowBox[{"\[Theta]ValsRetire", " ", "=", " ", 
+      RowBox[{"Join", "[", 
+       RowBox[{"\[Theta]ValsRetire", ",", 
+        RowBox[{"Table", "[", 
+         RowBox[{"0", ",", 
+          RowBox[{"{", 
+           RowBox[{"NumOf\[Theta]ShockPoints", "+", "1", "-", 
+            RowBox[{"Length", "[", "\[Theta]ValsRetire", "]"}]}], "}"}]}], 
+         "]"}]}], "]"}]}], ";", "\n", 
+     RowBox[{"\[Theta]ProbsRetire", " ", "=", " ", 
+      RowBox[{"Join", "[", 
+       RowBox[{"\[Theta]ProbsRetire", ",", 
+        RowBox[{"Table", "[", 
+         RowBox[{"0", ",", 
+          RowBox[{"{", 
+           RowBox[{"NumOf\[Theta]ShockPoints", "+", "1", "-", 
+            RowBox[{"Length", "[", "\[Theta]ProbsRetire", "]"}]}], "}"}]}], 
+         "]"}]}], "]"}]}], ";", "\n", 
+     RowBox[{"\[Theta]Age", " ", "=", " ", 
+      RowBox[{"{", 
+       RowBox[{"\[Theta]ValsRetire", ",", "\[Theta]ProbsRetire"}], "}"}]}], 
+     ";", "\n", "\n", 
+     RowBox[{"Return", "[", "\[Theta]Age", "]"}], ";"}], "\n", "*)"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"--", 
+     RowBox[{"--", 
+      RowBox[{"--", 
+       RowBox[{"--", 
+        RowBox[{"--", 
+         RowBox[{"--", 
+          RowBox[{"--", 
+           RowBox[{"--", 
+            RowBox[{"--", 
+             RowBox[{"--", 
+              RowBox[{"--", 
+               RowBox[{"--", 
+                RowBox[{"--", 
+                 RowBox[{"--", 
+                  RowBox[{"--", 
+                   RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{
+                    "--", "-"}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}\
+]}]}]}]}]}], "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[CapitalPsi]AgeYoung", "[", "t_", "]"}], " ", ":=", " ", 
+     RowBox[{"Block", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "\[Sigma]\[CapitalPsi]Age", ",", "\[CapitalPsi]Age", ",", 
+         "\[CapitalPsi]ValsWork", ",", "\[CapitalPsi]ProbsWork"}], "}"}], ",",
+        "\n", 
+       RowBox[{
+        RowBox[{"\[Sigma]\[CapitalPsi]Age", "=", " ", 
+         RowBox[{"\[Sigma]\[CapitalPsi]", "[", 
+          RowBox[{"[", "t", "]"}], "]"}]}], ";", "\n", 
+        RowBox[{"\[CapitalPsi]Age", " ", "=", " ", 
+         RowBox[{"DiscreteMeanOneLogNormal", "[", 
+          RowBox[{
+          "\[Sigma]\[CapitalPsi]Age", ",", "NumOf\[Theta]ShockPoints"}], 
+          "]"}]}], ";", " ", "\n", 
+        RowBox[{"Return", "[", "\[CapitalPsi]Age", "]"}], ";"}]}], "\n", 
+      "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "\[CapitalPsi]ValsRetire", ",", " ", "\[CapitalPsi]ProbsRetire"}], 
+      "}"}], "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", "1", "}"}], ",", " ", 
+       RowBox[{"{", "1", "}"}]}], "}"}]}], ";", " ", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+     "No", " ", "permanent", " ", "shocks", " ", "after", " ", "retirement"}],
+      " ", "*)"}], "\n", 
+    RowBox[{"\[CapitalPsi]ValsRetire", " ", "=", " ", 
+     RowBox[{"Join", "[", 
+      RowBox[{"\[CapitalPsi]ValsRetire", ",", 
+       RowBox[{"Table", "[", 
+        RowBox[{"1", ",", 
+         RowBox[{"{", 
+          RowBox[{"NumOf\[CapitalPsi]ShockPoints", " ", "-", " ", 
+           RowBox[{"Length", "[", "\[CapitalPsi]ValsRetire", "]"}]}], "}"}]}],
+         "]"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"\[CapitalPsi]ProbsRetire", " ", "=", " ", 
+     RowBox[{"Join", "[", 
+      RowBox[{"\[CapitalPsi]ProbsRetire", ",", 
+       RowBox[{"Table", "[", 
+        RowBox[{"0", ",", 
+         RowBox[{"{", 
+          RowBox[{"NumOf\[CapitalPsi]ShockPoints", " ", "-", " ", 
+           RowBox[{"Length", "[", "\[CapitalPsi]ProbsRetire", "]"}]}], 
+          "}"}]}], "]"}]}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"\[CapitalPsi]MatYoungToOld", "=", 
+     RowBox[{"Join", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"\[CapitalPsi]AgeYoung", "[", "t", "]"}], " ", "\n", ",", 
+         " ", 
+         RowBox[{"{", 
+          RowBox[{"t", ",", "1", ",", 
+           RowBox[{"PeriodsToSolve", "-", 
+            RowBox[{"(", 
+             RowBox[{"90", "-", "65"}], ")"}]}]}], "}"}]}], "]"}], "\n", ",", 
+       " ", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "\[CapitalPsi]ValsRetire", ",", " ", "\[CapitalPsi]ProbsRetire"}], 
+          "}"}], "\n", ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"90", "-", "65"}], "}"}]}], "]"}]}], "\n", "]"}]}], ";", 
+    " ", 
+    RowBox[{"(*", " ", 
+     RowBox[{"No", " ", "shocks", " ", "after", " ", "retirement"}], " ", 
+     "*)"}], "\n", 
+    RowBox[{"\[CapitalPsi]Mat", "=", 
+     RowBox[{"Reverse", "[", "\[CapitalPsi]MatYoungToOld", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"--", 
+     RowBox[{"--", 
+      RowBox[{"--", 
+       RowBox[{"--", 
+        RowBox[{"--", 
+         RowBox[{"--", 
+          RowBox[{"--", 
+           RowBox[{"--", 
+            RowBox[{"--", 
+             RowBox[{"--", 
+              RowBox[{"--", 
+               RowBox[{"--", 
+                RowBox[{"--", 
+                 RowBox[{"--", 
+                  RowBox[{"--", 
+                   RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{"--", 
+                    RowBox[{
+                    "--", "-"}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}\
+]}]}]}]}]}], "*)"}], "\n", "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Put", " ", "the", " ", "data", " ", "in", " ", "the", " ", "format", " ",
+      "used", " ", "for", " ", "the", " ", "GPU", " ", "version"}], " ", 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"\[Theta]ValsLife", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"\[Theta]Mat", "[", 
+        RowBox[{"[", 
+         RowBox[{"t", ",", " ", "1"}], "]"}], "]"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", "1", ",", "PeriodsToSolve"}], "}"}]}], "]"}]}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{"\[Theta]ProbsLife", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"\[Theta]Mat", "[", 
+        RowBox[{"[", 
+         RowBox[{"t", ",", " ", "2"}], "]"}], "]"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", "1", ",", "PeriodsToSolve"}], "}"}]}], "]"}]}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{"\[CapitalPsi]ValsLife", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"\[CapitalPsi]Mat", "[", 
+        RowBox[{"[", 
+         RowBox[{"t", ",", " ", "1"}], "]"}], "]"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", "1", ",", "PeriodsToSolve"}], "}"}]}], "]"}]}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{"\[CapitalPsi]ProbsLife", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"\[CapitalPsi]Mat", "[", 
+        RowBox[{"[", 
+         RowBox[{"t", ",", " ", "2"}], "]"}], "]"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"t", ",", "1", ",", "PeriodsToSolve"}], "}"}]}], "]"}]}], 
+    ";"}], "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.6801745468512487`*^9, 3.680174609668941*^9}, {
+   3.680174993280458*^9, 3.680175031989489*^9}, {3.680175558549028*^9, 
+   3.680175576736302*^9}, {3.6801765627549887`*^9, 3.680176566706195*^9}, {
+   3.6801769409928617`*^9, 3.680177099424399*^9}, {3.680177534919826*^9, 
+   3.680177557729061*^9}, {3.68017776384263*^9, 3.680177779875781*^9}, {
+   3.6801784584742126`*^9, 3.68017847615798*^9}, 3.680178776167687*^9, {
+   3.680179044684808*^9, 3.680179076271265*^9}, {3.680179163611315*^9, 
+   3.680179208014254*^9}, {3.680179244560636*^9, 3.680179272383959*^9}, {
+   3.680179320808585*^9, 3.680179402702264*^9}, {3.680181902336812*^9, 
+   3.6801820069803333`*^9}, {3.680182063558631*^9, 3.680182102406283*^9}, {
+   3.680182441134049*^9, 3.680182561139825*^9}, {3.680182667973316*^9, 
+   3.6801827510137568`*^9}, {3.680184238072035*^9, 3.680184299333506*^9}, {
+   3.6801866734896727`*^9, 3.68018670911652*^9}, {3.680190100287778*^9, 
+   3.6801901077438993`*^9}, {3.680236596483293*^9, 3.680236706763958*^9}, {
+   3.680236755752328*^9, 3.6802368495113363`*^9}, {3.6802369580055113`*^9, 
+   3.6802369627112713`*^9}, 3.680237290718081*^9, {3.680251994198832*^9, 
+   3.680251995077582*^9}, {3.680253870595707*^9, 3.680253901505439*^9}, 
+   3.680258115987125*^9}]
+},
+WindowSize->{1033, 686},
+WindowMargins->{{4, Automatic}, {0, Automatic}},
+FrontEndVersion->"10.4 for Mac OS X x86 (32-bit, 64-bit Kernel) (February 25, \
+2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 19550, 488, 1406, "Input"]
+}
+]
+*)
+
